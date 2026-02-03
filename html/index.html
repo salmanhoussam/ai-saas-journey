@@ -1,47 +1,80 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Restaurant Menu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Supabase -->
+  <!-- Supabase CDN (مرة واحدة فقط) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     body {
+      margin: 0;
+      font-family: Arial, sans-serif;
       background: #0f0f0f;
       color: #fff;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
     }
 
     h1 {
       text-align: center;
-      margin-bottom: 30px;
+      padding: 20px;
+    }
+
+    .menu {
+      max-width: 900px;
+      margin: auto;
+      padding: 10px;
     }
 
     .item {
       display: flex;
       gap: 15px;
-      border-bottom: 1px solid #333;
       padding: 15px 0;
+      border-bottom: 1px solid #333;
     }
 
     .item img {
       width: 120px;
+      height: 90px;
+      object-fit: cover;
       border-radius: 10px;
+    }
+
+    .info {
+      flex: 1;
+    }
+
+    .name {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .price {
+      margin: 5px 0;
+      color: #ccc;
     }
 
     .order-btn {
       display: inline-block;
       margin-top: 8px;
       padding: 6px 12px;
-      background: #25d366;
+      background: #25D366;
       color: #000;
-      border-radius: 6px;
       text-decoration: none;
+      border-radius: 6px;
       font-weight: bold;
+    }
+
+    .lang {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    button {
+      margin: 0 5px;
+      padding: 6px 12px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -49,58 +82,76 @@
 <body>
 
   <h1>📋 Menu</h1>
-  <div id="menu"></div>
+
+  <div class="lang">
+    <button onclick="setLang('ar')">Arabic</button>
+    <button onclick="setLang('en')">English</button>
+  </div>
+
+  <div id="menu" class="menu"></div>
 
   <script>
+    /***********************
+     * Supabase credentials
+     ***********************/
     const SUPABASE_URL = "https://znloborouipckokqpidu.supabase.co";
     const SUPABASE_KEY = "sb_publishable_1sLCk0nZR20iQCyvRqfoxg_uI6Mun2c";
 
-    const supabase = window.supabase.createClient(
+    const supabaseClient = window.supabase.createClient(
       SUPABASE_URL,
       SUPABASE_KEY
     );
 
     let currentLang = "ar";
-    const phone = "96178727986";
+
+    function setLang(lang) {
+      currentLang = lang;
+      loadMenu();
+    }
 
     async function loadMenu() {
-      const { data, error } = await supabase
+      const menuDiv = document.getElementById("menu");
+      menuDiv.innerHTML = "Loading...";
+
+      const { data, error } = await supabaseClient
         .from("menu_items")
-        .select("*");
+        .select("*")
+        .order("id");
 
       if (error) {
         console.error(error);
+        menuDiv.innerHTML = "Error loading menu";
         return;
       }
 
-      const menu = document.getElementById("menu");
-      menu.innerHTML = "";
+      menuDiv.innerHTML = "";
 
       data.forEach(item => {
         const name =
-          currentLang === "ar"
-            ? item["name-ar"]
-            : item["name-en"];
+          currentLang === "ar" ? item.name_ar : item.name_en;
 
-        const text =
-          currentLang === "ar"
-            ? `مرحبا، أريد طلب:\n${name}\nالسعر: ${item.price}$`
-            : `Hello, I want to order:\n${name}\nPrice: ${item.price}$`;
+        const whatsappText = encodeURIComponent(
+          `I want to order: ${item.name_en}`
+        );
 
-        menu.innerHTML += `
+        const html = `
           <div class="item">
-            <img src="${item.image_url}" />
-            <div>
-              <h3>${name}</h3>
-              <p>Price: $${item.price}</p>
+            <img src="${item.image_url}" alt="">
+            <div class="info">
+              <div class="name">${name}</div>
+              <div class="price">
+                ${currentLang === "ar" ? "السعر" : "Price"}: $${item.price}
+              </div>
               <a class="order-btn"
-                 target="_blank"
-                 href="https://wa.me/${phone}?text=${encodeURIComponent(text)}">
-                 Order via WhatsApp
+                 href="https://wa.me/96178727986?text=${whatsappText}"
+                 target="_blank">
+                ${currentLang === "ar" ? "اطلب عبر واتساب" : "Order on WhatsApp"}
               </a>
             </div>
           </div>
         `;
+
+        menuDiv.insertAdjacentHTML("beforeend", html);
       });
     }
 
