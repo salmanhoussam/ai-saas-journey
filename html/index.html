@@ -38,40 +38,44 @@
   <div id="menu"></div>
 
   <script>
-    // 🔑 Supabase credentials
-    const SUPABASE_URL = "https://znloborouipckokqpidu.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_1sLCk0nZR20iQCyvRqfoxg_uI6Mun2c";
+  // 🔑 Supabase credentials
+  const SUPABASE_URL = "https://znloborouipckokqpidu.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_1sLCk0nZR20iQCyvRqfoxg_uI6Mun2c"; // مفتاحك الحالي
 
-    // Create client
-    const { createClient } = supabase;
-    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+  const { createClient } = supabase;
+  const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    async function loadMenu() {
-      const { data, error } = await supabaseClient
-        .from("menu_items")
-        .select("name, price, image_url");
+  const LANG = "ar"; // غيّرها إلى "en" للإنجليزي
 
-      if (error) {
-        console.error("Supabase error:", error);
-        return;
-      }
+  async function loadMenu() {
+    const { data, error } = await supabaseClient
+      .from("menu_items")
+      .select("name_ar, name_en, price, image_url");
 
-      const menuDiv = document.getElementById("menu");
-      menuDiv.innerHTML = "";
-
-      data.forEach(item => {
-        menuDiv.innerHTML += `
-          <div class="item">
-            <strong>${item.name}</strong><br>
-            السعر: $${item.price}
-            ${item.image_url ? `<img src="${item.image_url}" />` : ""}
-          </div>
-        `;
-      });
+    if (error) {
+      console.error("Supabase error:", error);
+      return;
     }
 
-    loadMenu();
-  </script>
+    const menuDiv = document.getElementById("menu");
+    menuDiv.innerHTML = "";
+
+    data.forEach(item => {
+      const name = LANG === "ar" ? item.name_ar : item.name_en;
+
+      menuDiv.innerHTML += `
+        <div class="item">
+          <strong>${name}</strong><br>
+          ${LANG === "ar" ? "السعر" : "Price"}: $${item.price}<br>
+          ${item.image_url ? `<img src="${item.image_url}" />` : ""}
+        </div>
+      `;
+    });
+  }
+
+  loadMenu();
+</script>
+
 
 </body>
 </html>
