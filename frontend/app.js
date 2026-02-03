@@ -54,7 +54,7 @@ function renderMenu() {
 
     menu.innerHTML += `
       <div class="item">
-        <img src="${item.image}" alt="${name}">
+        <img src="${item.image-url}" alt="${name}">
         <h3>${name}</h3>
         <p>${priceLabel}: ${item.price}</p>
 
