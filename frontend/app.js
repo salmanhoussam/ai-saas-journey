@@ -2,7 +2,8 @@
 // Supabase config
 // ===============================
 const SUPABASE_URL = "https://znloborouipckokqpidu.supabase.co";
-const SUPABASE_KEY = "sb_publishable_1sLCk0nZR20iQCyvRqfoxg_uI6Mun2c";
+const SUPABASE_KEY =
+  "sb_publishable_1sLCk0nZR20iQCyvRqfoxg_uI6Mun2c";
 
 const supabase = window.supabase.createClient(
   SUPABASE_URL,
@@ -13,14 +14,19 @@ const supabase = window.supabase.createClient(
 const phoneNumber = "96178727986";
 
 // ===============================
+document.addEventListener("DOMContentLoaded", () => {
+  loadMenu();
+});
+
+// ===============================
 async function loadMenu() {
   const { data, error } = await supabase
-    .from("menu_items") // ✅ الاسم الصحيح
+    .from("menu_items")
     .select("*")
     .eq("is_available", true);
 
   if (error) {
-    console.error(error);
+    console.error("SUPABASE ERROR:", error);
     return;
   }
 
@@ -36,20 +42,16 @@ function renderMenu(items) {
     const card = document.createElement("div");
     card.className = "item";
 
-    // image
     const img = document.createElement("img");
     img.src = item.image_url;
     img.alt = "menu item";
 
-    // title (مؤقتًا ID)
     const title = document.createElement("h3");
     title.textContent = `Item #${item.id}`;
 
-    // price
     const price = document.createElement("p");
     price.textContent = `${item.price} ${item.currency}`;
 
-    // whatsapp
     const btn = document.createElement("a");
     btn.className = "whatsapp-btn";
     btn.textContent = "اطلب عبر واتساب";
@@ -62,5 +64,3 @@ function renderMenu(items) {
     menu.appendChild(card);
   });
 }
-// ===============================
-loadMenu();
