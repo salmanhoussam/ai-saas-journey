@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <title>Restaurant Menu</title>
+
+  <!-- Supabase JS v2 -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .item {
+      border-bottom: 1px solid #333;
+      padding: 15px 0;
+    }
+
+    img {
+      max-width: 150px;
+      border-radius: 8px;
+      display: block;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📋 Menu</h1>
+  <div id="menu"></div>
+
+  <script>
+    // 🔑 Supabase credentials
+    const SUPABASE_URL = "https://znloborouipckokqpidu.supabase.co";
+    const SUPABASE_KEY =
+      "sb_publishable_1ugblf9MU16M-EzQZfjYA_S2KA6jx7";
+
+    // Create client
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function loadMenu() {
+      const { data, error } = await supabaseClient
+        .from("menu_items")
+        .select("name, price, image_url");
+
+      if (error) {
+        console.error("Supabase error:", error);
+        return;
+      }
+
+      const menuDiv = document.getElementById("menu");
+      menuDiv.innerHTML = "";
+
+      data.forEach(item => {
+        menuDiv.innerHTML += `
+          <div class="item">
+            <strong>${item.name}</strong><br>
+            السعر: $${item.price}
+            ${item.image_url ? `<img src="${item.image_url}" />` : ""}
+          </div>
+        `;
+      });
+    }
+
+    loadMenu();
+  </script>
+
+</body>
+</html>
