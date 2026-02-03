@@ -1,41 +1,26 @@
 // ===============================
 // Supabase config
 // ===============================
-const SUPABASE_URL = "https://znloborouipckokqpidu.co";
-const SUPABASE_ANON_KEY = "sb_publishable_1sLCk0nZR20iQCyvRqfoxg_uI6Mun2c";
+const SUPABASE_URL = "https://znloborouipckokqpidu.supabase.co";
+const SUPABASE_KEY = "sb_publishable_1sLCk0nZR20iQCyvRqfoxg_uI6Mun2c";
 
 const supabase = window.supabase.createClient(
   SUPABASE_URL,
-  SUPABASE_ANON_KEY
+  SUPABASE_KEY
 );
 
 // ===============================
-// Global state
-// ===============================
-let lang = "ar";
-const menu = document.getElementById("menu");
+const phoneNumber = "96178727986";
 
-// ===============================
-// Change language
-// ===============================
-function setLang(l) {
-  lang = l;
-  loadMenu();
-}
-
-// ===============================
-// Load menu
 // ===============================
 async function loadMenu() {
-  menu.innerHTML = "Loading...";
-
   const { data, error } = await supabase
-    .from("menu")
-    .select("*");
+    .from("menu_items") // ✅ الاسم الصحيح
+    .select("*")
+    .eq("is_available", true);
 
   if (error) {
-    console.error("Supabase error:", error);
-    menu.innerHTML = "Error loading menu";
+    console.error(error);
     return;
   }
 
@@ -43,39 +28,39 @@ async function loadMenu() {
 }
 
 // ===============================
-// Render menu
-// ===============================
 function renderMenu(items) {
+  const menu = document.getElementById("menu");
   menu.innerHTML = "";
 
   items.forEach(item => {
-    const name = lang === "ar" ? item.name_ar : item.name_en;
+    const card = document.createElement("div");
+    card.className = "item";
 
-    menu.innerHTML += `
-      <div class="item">
-        <img src="${item["image-url"]}" alt="${name}" />
+    // image
+    const img = document.createElement("img");
+    img.src = item.image_url;
+    img.alt = "menu item";
 
-        <h3>${name}</h3>
+    // title (مؤقتًا ID)
+    const title = document.createElement("h3");
+    title.textContent = `Item #${item.id}`;
 
-        <p>${lang === "ar" ? "السعر" : "Price"}: $${item.price}</p>
+    // price
+    const price = document.createElement("p");
+    price.textContent = `${item.price} ${item.currency}`;
 
-        <a
-          class="whatsapp-btn"
-          target="_blank"
-          href="https://wa.me/96178727986?text=${encodeURIComponent(
-            lang === "ar"
-              ? `أريد طلب ${item.name_ar}`
-              : `I want to order ${item.name_en}`
-          )}"
-        >
-          ${lang === "ar" ? "اطلب عبر واتساب" : "Order via WhatsApp"}
-        </a>
-      </div>
-    `;
+    // whatsapp
+    const btn = document.createElement("a");
+    btn.className = "whatsapp-btn";
+    btn.textContent = "اطلب عبر واتساب";
+
+    const msg = `مرحبا، أريد طلب Item #${item.id}`;
+    btn.href = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(msg)}`;
+    btn.target = "_blank";
+
+    card.append(img, title, price, btn);
+    menu.appendChild(card);
   });
 }
-
-// ===============================
-// Init
 // ===============================
 loadMenu();
