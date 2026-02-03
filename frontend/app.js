@@ -1,106 +1,83 @@
-// ====== SETTINGS ======
-const WHATSAPP_NUMBER = "96178727986";
+// ===============================
+// Supabase config
+// ===============================
+const SUPABASE_URL = "https://znloborouipckokqpidu.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_1sLCk0nZR20iQCyvRqfoxg_uI6Mun2c";
 
-// اللغة الافتراضية
-let currentLang = "ar";
+const supabase = supabaseJs.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
-// ====== MENU DATA ======
-const menuData = [
-  {
-    name_ar: "قريدس",
-    name_en: "Shrimp Sandwich",
-    price: "6$",
-    image: "images/shrimp1.jpg"
-  },
-  {
-    name_ar: "قريدس مقلي",
-    name_en: "Fried Shrimp",
-    price: "6$",
-    image: "images/shrimp2.jpg"
-  },
-  {
-    name_ar: "توستر",
-    name_en: "Toaster",
-    price: "5$",
-    image: "images/toaster.jpg"
-  },
-  {
-    name_ar: "فاهيتا",
-    name_en: "Fajita",
-    price: "4.5$",
-    image: "images/fajita.jpg"
-  },
-  {
-    name_ar: "فلادلفيا",
-    name_en: "Philadelphia",
-    price: "5$",
-    image: "images/philadelphia.jpg"
-  }
-];
-
-// ====== ELEMENTS ======
+// ===============================
+// Global variables
+// ===============================
+let lang = "ar";
 const menu = document.getElementById("menu");
-const btnAr = document.getElementById("btn-ar");
-const btnEn = document.getElementById("btn-en");
 
-// ====== RENDER MENU ======
-function renderMenu() {
+// ===============================
+// Change language
+// ===============================
+function setLang(selectedLang) {
+  lang = selectedLang;
+  loadMenu();
+}
+
+// ===============================
+// Load menu from Supabase
+// ===============================
+async function loadMenu() {
+  menu.innerHTML = "Loading...";
+
+  const { data, error } = await supabase
+    .from("menu")
+    .select("*");
+
+  if (error) {
+    console.error(error);
+    menu.innerHTML = "Error loading menu";
+    return;
+  }
+
+  renderMenu(data);
+}
+
+// ===============================
+// Render menu items
+// ===============================
+function renderMenu(data) {
   menu.innerHTML = "";
 
-  menuData.forEach(item => {
-    const name = currentLang === "ar" ? item.name_ar : item.name_en;
-    const priceLabel = currentLang === "ar" ? "السعر" : "Price";
-    const orderText = currentLang === "ar" ? "اطلب عبر واتساب" : "Order via WhatsApp";
-
+  data.forEach(item => {
     menu.innerHTML += `
       <div class="item">
-        <img src="${item.image-url}" alt="${name}">
-        <h3>${name}</h3>
-        <p>${priceLabel}: ${item.price}</p>
+        <img src="${item["image-url"]}" alt="${item.name_en}">
+        
+        <h3>
+          ${lang === "ar" ? item.name_ar : item.name_en}
+        </h3>
 
-        <button
+        <p>
+          ${lang === "ar" ? "السعر" : "Price"}: $${item.price}
+        </p>
+
+        <a 
           class="whatsapp-btn"
-          data-name-ar="${item.name_ar}"
-          data-name-en="${item.name_en}"
-          data-price="${item.price}"
+          href="https://wa.me/96178727986?text=${encodeURIComponent(
+            lang === "ar"
+              ? `أريد طلب ${item.name_ar}`
+              : `I want to order ${item.name_en}`
+          )}"
+          target="_blank"
         >
-          ${orderText}
-        </button>
+          ${lang === "ar" ? "اطلب عبر واتساب" : "Order via WhatsApp"}
+        </a>
       </div>
     `;
   });
 }
 
-// ====== LANGUAGE SWITCH ======
-btnAr.addEventListener("click", () => {
-  currentLang = "ar";
-  document.documentElement.lang = "ar";
-  renderMenu();
-});
-
-btnEn.addEventListener("click", () => {
-  currentLang = "en";
-  document.documentElement.lang = "en";
-  renderMenu();
-});
-
-// ====== WHATSAPP ORDER ======
-document.addEventListener("click", (e) => {
-  if (!e.target.classList.contains("whatsapp-btn")) return;
-
-  const nameAr = e.target.dataset.nameAr;
-  const nameEn = e.target.dataset.nameEn;
-  const price = e.target.dataset.price;
-
-  const message =
-    currentLang === "ar"
-      ? `مرحبا 👋\nأود طلب:\n${nameAr}\nالسعر: ${price}`
-      : `Hello 👋\nI would like to order:\n${nameEn}\nPrice: ${price}`;
-
-  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-  window.open(url, "_blank");
-});
-
-// ====== INIT ======
-renderMenu();
-
+// ===============================
+// Initial load
+// ===============================
+loadMenu();
