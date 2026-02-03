@@ -21,12 +21,12 @@ document.addEventListener("DOMContentLoaded", () => {
 // ===============================
 async function loadMenu() {
   const { data, error } = await supabase
-    .from("menu_items")
+    .from("menu_items") // ✅ الاسم الصحيح
     .select("*")
     .eq("is_available", true);
 
   if (error) {
-    console.error("SUPABASE ERROR:", error);
+    console.error("Supabase error:", error);
     return;
   }
 
@@ -38,7 +38,7 @@ function renderMenu(items) {
   const menu = document.getElementById("menu");
   menu.innerHTML = "";
 
-  items.forEach(item => {
+  items.forEach((item) => {
     const card = document.createElement("div");
     card.className = "item";
 
