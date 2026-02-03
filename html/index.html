@@ -63,6 +63,36 @@
 
     data.forEach(item => {
       const name = LANG === "ar" ? item.name_ar : item.name_en;
+const phone = "96178727986"; // رقم واتساب المطعم
+
+data.forEach(item => {
+  const name =
+    currentLang === "ar"
+      ? item["name-ar"]
+      : item["name-en"];
+
+  menuDiv.innerHTML += `
+    <div class="item">
+      ${item.image_url ? `<img src="${item.image_url}">` : ""}
+      
+      <strong>${name}</strong>
+      
+      <div class="price">
+        ${currentLang === "ar" ? "السعر" : "Price"}: $${item.price}
+      </div>
+
+      <a
+        class="order-btn"
+        target="_blank"
+        href="https://wa.me/${phone}?text=${encodeURIComponent(
+          `مرحبا، أريد طلب:\n${name}\nالسعر: ${item.price}$`
+        )}"
+      >
+        ${currentLang === "ar" ? "اطلب عبر واتساب" : "Order via WhatsApp"}
+      </a>
+    </div>
+  `;
+});
 
       menuDiv.innerHTML += `
         <div class="item">
