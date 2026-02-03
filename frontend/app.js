@@ -1,16 +1,16 @@
 // ===============================
 // Supabase config
 // ===============================
-const SUPABASE_URL = "https://znloborouipckokqpidu.supabase.co";
+const SUPABASE_URL = "https://znloborouipckokqpidu.co";
 const SUPABASE_ANON_KEY = "sb_publishable_1sLCk0nZR20iQCyvRqfoxg_uI6Mun2c";
 
-const supabase = supabaseJs.createClient(
+const supabase = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY
 );
 
 // ===============================
-// Global variables
+// Global state
 // ===============================
 let lang = "ar";
 const menu = document.getElementById("menu");
@@ -18,13 +18,13 @@ const menu = document.getElementById("menu");
 // ===============================
 // Change language
 // ===============================
-function setLang(selectedLang) {
-  lang = selectedLang;
+function setLang(l) {
+  lang = l;
   loadMenu();
 }
 
 // ===============================
-// Load menu from Supabase
+// Load menu
 // ===============================
 async function loadMenu() {
   menu.innerHTML = "Loading...";
@@ -34,7 +34,7 @@ async function loadMenu() {
     .select("*");
 
   if (error) {
-    console.error(error);
+    console.error("Supabase error:", error);
     menu.innerHTML = "Error loading menu";
     return;
   }
@@ -43,32 +43,30 @@ async function loadMenu() {
 }
 
 // ===============================
-// Render menu items
+// Render menu
 // ===============================
-function renderMenu(data) {
+function renderMenu(items) {
   menu.innerHTML = "";
 
-  data.forEach(item => {
+  items.forEach(item => {
+    const name = lang === "ar" ? item.name_ar : item.name_en;
+
     menu.innerHTML += `
       <div class="item">
-        <img src="${item["image-url"]}" alt="${item.name_en}">
-        
-        <h3>
-          ${lang === "ar" ? item.name_ar : item.name_en}
-        </h3>
+        <img src="${item["image-url"]}" alt="${name}" />
 
-        <p>
-          ${lang === "ar" ? "السعر" : "Price"}: $${item.price}
-        </p>
+        <h3>${name}</h3>
 
-        <a 
+        <p>${lang === "ar" ? "السعر" : "Price"}: $${item.price}</p>
+
+        <a
           class="whatsapp-btn"
+          target="_blank"
           href="https://wa.me/96178727986?text=${encodeURIComponent(
             lang === "ar"
               ? `أريد طلب ${item.name_ar}`
               : `I want to order ${item.name_en}`
           )}"
-          target="_blank"
         >
           ${lang === "ar" ? "اطلب عبر واتساب" : "Order via WhatsApp"}
         </a>
@@ -78,6 +76,6 @@ function renderMenu(data) {
 }
 
 // ===============================
-// Initial load
+// Init
 // ===============================
 loadMenu();
