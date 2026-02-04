@@ -23,7 +23,11 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       cart.push({
         id: item.id,
-        name: item.name || `Item #${item.id}`,
+      name:
+      item.name_ar ||
+      item.name_en ||
+     `Item #${item.id}`,
+
         price: item.price,
         currency: item.currency,
         qty: 1
@@ -66,14 +70,28 @@ document.addEventListener("DOMContentLoaded", () => {
       img.alt = "menu item";
 
       const title = document.createElement("h3");
-      title.textContent = item.name || `Item #${item.id}`;
+      title.textContent =
+       item.name_ar ||
+       item.name_en ||
+      `Item #${item.id}`;
+
 
       const price = document.createElement("p");
       price.textContent = `${item.price} ${item.currency}`;
 
       const btn = document.createElement("button");
-      btn.className = "whatsapp-btn";
-      btn.textContent = "أضف إلى السلة 🛒";
+btn.className = "whatsapp-btn";
+btn.textContent = "أضف إلى السلة 🛒";
+
+btn.addEventListener("click", () => {
+  addToCart({
+    id: item.id,
+    name: item.name_ar || item.name_en || item.name,
+    price: item.price,
+    currency: item.currency
+  });
+});
+
 
       btn.onclick = () => {
         addToCart(item);
