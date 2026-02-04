@@ -90,6 +90,15 @@ btn.addEventListener("click", () => {
     price: item.price,
     currency: item.currency
   });
+  btn.addEventListener("click", () => {
+  addToCart({
+    id: item.id,
+    name: item.name_ar,
+    price: item.price,
+    currency: item.currency
+  });
+});
+
 });
 
 
