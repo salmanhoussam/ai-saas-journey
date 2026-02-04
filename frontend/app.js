@@ -80,13 +80,13 @@ document.addEventListener("DOMContentLoaded", () => {
       price.textContent = `${item.price} ${item.currency}`;
 
       const btn = document.createElement("button");
-btn.className = "whatsapp-btn";
-btn.textContent = "أضف إلى السلة 🛒";
+     btn.className = "whatsapp-btn";
+    btn.textContent = "أضف إلى السلة";
 
 btn.addEventListener("click", () => {
   addToCart({
     id: item.id,
-    name: item.name_ar || item.name_en || item.name,
+    name: item.name_ar || item.name_en,
     price: item.price,
     currency: item.currency
   });
