@@ -1,4 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // ===============================
+  // Supabase config
+  // ===============================
   const SUPABASE_URL = "https://znloborouipckokqpidu.supabase.co";
   const SUPABASE_KEY = "sb_publishable_1sLCk0nZR20iQCyvRqfoxg_uI6Mun2c";
 
@@ -7,8 +10,32 @@ document.addEventListener("DOMContentLoaded", () => {
     SUPABASE_KEY
   );
 
-  const phoneNumber = "96178727986";
+  // ===============================
+  // Cart State
+  // ===============================
+  let cart = [];
 
+  function addToCart(item) {
+    const existing = cart.find(i => i.id === item.id);
+
+    if (existing) {
+      existing.qty += 1;
+    } else {
+      cart.push({
+        id: item.id,
+        name: item.name || `Item #${item.id}`,
+        price: item.price,
+        currency: item.currency,
+        qty: 1
+      });
+    }
+
+    console.log("🛒 Cart:", cart);
+  }
+
+  // ===============================
+  // Load Menu
+  // ===============================
   async function loadMenu() {
     const { data, error } = await supabase
       .from("menu_items")
@@ -23,6 +50,9 @@ document.addEventListener("DOMContentLoaded", () => {
     renderMenu(data);
   }
 
+  // ===============================
+  // Render Menu
+  // ===============================
   function renderMenu(items) {
     const menu = document.getElementById("menu");
     menu.innerHTML = "";
@@ -41,18 +71,19 @@ document.addEventListener("DOMContentLoaded", () => {
       const price = document.createElement("p");
       price.textContent = `${item.price} ${item.currency}`;
 
-      const btn = document.createElement("a");
+      const btn = document.createElement("button");
       btn.className = "whatsapp-btn";
-      btn.textContent = "اطلب عبر واتساب";
+      btn.textContent = "أضف إلى السلة 🛒";
 
-      const msg = `مرحبا، أريد طلب ${title.textContent}`;
-      btn.href = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(msg)}`;
-      btn.target = "_blank";
+      btn.onclick = () => {
+        addToCart(item);
+      };
 
       card.append(img, title, price, btn);
       menu.appendChild(card);
     });
   }
 
+  // ===============================
   loadMenu();
 });
