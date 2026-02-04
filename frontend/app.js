@@ -15,6 +15,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // ===============================
   let cart = [];
 
+  function updateCartBadge() {
+    const badge = document.getElementById("cart-count");
+    const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+    if (badge) badge.textContent = totalQty;
+  }
+
   function addToCart(item) {
     const existing = cart.find(i => i.id === item.id);
 
@@ -23,17 +29,14 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       cart.push({
         id: item.id,
-      name:
-      item.name_ar ||
-      item.name_en ||
-     `Item #${item.id}`,
-
+        name: item.name,
         price: item.price,
         currency: item.currency,
         qty: 1
       });
     }
 
+    updateCartBadge();
     console.log("🛒 Cart:", cart);
   }
 
@@ -71,40 +74,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const title = document.createElement("h3");
       title.textContent =
-       item.name_ar ||
-       item.name_en ||
-      `Item #${item.id}`;
-
+        item.name_ar ||
+        item.name_en ||
+        `Item #${item.id}`;
 
       const price = document.createElement("p");
       price.textContent = `${item.price} ${item.currency}`;
 
       const btn = document.createElement("button");
-     btn.className = "whatsapp-btn";
-    btn.textContent = "أضف إلى السلة";
+      btn.className = "whatsapp-btn";
+      btn.textContent = "أضف إلى السلة";
 
-btn.addEventListener("click", () => {
-  addToCart({
-    id: item.id,
-    name: item.name_ar || item.name_en,
-    price: item.price,
-    currency: item.currency
-  });
-  btn.addEventListener("click", () => {
-  addToCart({
-    id: item.id,
-    name: item.name_ar,
-    price: item.price,
-    currency: item.currency
-  });
-});
-
-});
-
-
-      btn.onclick = () => {
-        addToCart(item);
-      };
+      // ✅ حدث واحد فقط
+      btn.addEventListener("click", () => {
+        addToCart({
+          id: item.id,
+          name: item.name_ar || item.name_en,
+          price: item.price,
+          currency: item.currency
+        });
+      });
 
       card.append(img, title, price, btn);
       menu.appendChild(card);
