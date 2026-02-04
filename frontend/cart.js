@@ -65,8 +65,31 @@ function checkout() {
     return;
   }
 
-  console.log(cart);
-  alert("Order ready ✔ (check console)");
+  let message = "🛒 *New Order*\n\n";
+  let total = 0;
+
+  cart.forEach(item => {
+    const itemTotal = item.price * item.qty;
+    total += itemTotal;
+
+    message += `• ${item.name}\n`;
+    message += `  Qty: ${item.qty}\n`;
+    message += `  Price: $${itemTotal}\n`;
+
+    if (item.note && item.note.trim() !== "") {
+      message += `  📝 Note: ${item.note}\n`;
+    }
+
+    message += "\n";
+  });
+
+  message += `💰 *Total: $${total}*`;
+
+  const phone = "961XXXXXXXX"; // ← حط رقمك مع كود الدولة
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
+  window.open(url, "_blank");
 }
+
 
 renderCart();
