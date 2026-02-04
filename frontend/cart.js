@@ -1,56 +1,56 @@
-let cart = [];
+document.addEventListener("DOMContentLoaded", () => {
 
-function addToCart(item) {
-  const found = cart.find(i => i.id === item.id);
+  let cart = [];
 
-  if (found) {
-    found.qty += 1;
-  } else {
-    cart.push({ ...item, qty: 1 });
+  const cartCountEl = document.getElementById("cart-count");
+
+  function updateCartCount() {
+    const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+    cartCountEl.textContent = totalQty;
   }
 
-  updateCartCount();
-}
+  function addToCart(item) {
+    const existing = cart.find(i => i.id === item.id);
 
-function updateCartCount() {
-  const count = cart.reduce((sum, i) => sum + i.qty, 0);
-  document.getElementById("cart-count").textContent = count;
-}
+    if (existing) {
+      existing.qty += 1;
+    } else {
+      cart.push({
+        id: item.id,
+        name: item.name_ar || item.name_en || "Item",
+        price: item.price,
+        currency: item.currency,
+        qty: 1
+      });
+    }
 
-function toggleCart() {
-  const modal = document.getElementById("cart-modal");
-  modal.style.display = modal.style.display === "none" ? "block" : "none";
-  renderCart();
-}
+    updateCartCount();
+    console.log("🛒 Cart:", cart);
+  }
 
-function renderCart() {
-  const box = document.getElementById("cart-items");
-  const totalBox = document.getElementById("cart-total");
-  box.innerHTML = "";
+  // ===============================
+  // Render Menu
+  // ===============================
+  function renderMenu(items) {
+    const menu = document.getElementById("menu");
+    menu.innerHTML = "";
 
-  let total = 0;
+    items.forEach(item => {
+      const card = document.createElement("div");
+      card.className = "item";
 
-  cart.forEach(item => {
-    total += item.price * item.qty;
-    box.innerHTML += `<p>${item.name} × ${item.qty}</p>`;
-  });
+      card.innerHTML = `
+        <img src="${item.image_url}">
+        <h3>${item.name_ar || item.name_en}</h3>
+        <p>${item.price} ${item.currency}</p>
+        <button class="whatsapp-btn">أضف إلى السلة</button>
+      `;
 
-  totalBox.textContent = `المجموع: ${total} USD`;
-}
+      const btn = card.querySelector("button");
+      btn.addEventListener("click", () => addToCart(item));
 
-function sendWhatsApp() {
-  let msg = "مرحبا، أريد طلب:\n";
-  let total = 0;
+      menu.appendChild(card);
+    });
+  }
 
-  cart.forEach(i => {
-    msg += `${i.name} × ${i.qty}\n`;
-    total += i.price * i.qty;
-  });
-
-  msg += `\nالمجموع: ${total} USD`;
-
-  window.open(
-    `https://wa.me/96178727986?text=${encodeURIComponent(msg)}`,
-    "_blank"
-  );
-}
+});
