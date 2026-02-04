@@ -85,7 +85,7 @@ function checkout() {
 
   message += `💰 *Total: $${total}*`;
 
-  const phone = "961XXXXXXXX"; // ← حط رقمك مع كود الدولة
+  const phone = "96178727986"; // ← حط رقمك مع كود الدولة
   const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 
   window.open(url, "_blank");
