@@ -1,80 +1,68 @@
-/*************************
- * Cart State
- *************************/
 let cart = [];
 
-/*************************
- * Add To Cart
- * (ينادى من app.js)
- *************************/
-function addToCart(item) {
-  const existing = cart.find(i => i.id === item.id);
+const cartBox = document.getElementById("cart");
+const overlay = document.getElementById("overlay");
+const cartBtn = document.getElementById("cartBtn");
+const closeCart = document.getElementById("closeCart");
+const cartItems = document.getElementById("cart-items");
+const cartTotal = document.getElementById("cart-total");
+const cartCount = document.getElementById("cart-count");
+const whatsappBtn = document.getElementById("whatsappBtn");
 
-  if (existing) {
-    existing.qty += 1;
+cartBtn.onclick = () => openCart();
+closeCart.onclick = () => closeCartFn();
+overlay.onclick = () => closeCartFn();
+
+function openCart() {
+  cartBox.style.display = "block";
+  overlay.style.display = "block";
+}
+
+function closeCartFn() {
+  cartBox.style.display = "none";
+  overlay.style.display = "none";
+}
+
+function addToCart(item) {
+  const found = cart.find(i => i.id === item.id);
+
+  if (found) {
+    found.qty++;
   } else {
     cart.push({
       id: item.id,
-      name: item.name,
+      name: item.name_ar || item.name_en,
       price: item.price,
-      currency: item.currency || "USD",
+      currency: item.currency,
       qty: 1
     });
   }
 
-  updateCartUI();
-  console.log("🛒 Cart:", cart);
+  updateCart();
 }
 
-/*************************
- * Update Cart UI
- *************************/
-function updateCartUI() {
-  const countEl = document.getElementById("cart-count");
-  const itemsDiv = document.getElementById("cart-items");
-  const totalEl = document.getElementById("cart-total");
+function updateCart() {
+  cartItems.innerHTML = "";
+  let total = 0;
+  let qty = 0;
 
-  if (!countEl || !itemsDiv || !totalEl) return;
+  cart.forEach(i => {
+    total += i.price * i.qty;
+    qty += i.qty;
 
-  itemsDiv.innerHTML = "";
-
-  let totalQty = 0;
-  let totalPrice = 0;
-
-  cart.forEach(item => {
-    totalQty += item.qty;
-    totalPrice += item.price * item.qty;
-
-    const row = document.createElement("div");
-    row.className = "cart-item";
-    row.innerHTML = `
-      <span>${item.name} × ${item.qty}</span>
-      <span>${item.price * item.qty} ${item.currency}</span>
+    cartItems.innerHTML += `
+      <div class="cart-item">
+        <span>${i.name} × ${i.qty}</span>
+        <span>${i.price * i.qty} ${i.currency}</span>
+      </div>
     `;
-    itemsDiv.appendChild(row);
   });
 
-  countEl.textContent = totalQty;
-  totalEl.textContent = `المجموع: ${totalPrice} USD`;
+  cartTotal.textContent = `المجموع: $${total}`;
+  cartCount.textContent = qty;
 }
 
-/*************************
- * Toggle Cart
- *************************/
-function toggleCart() {
-  const modal = document.getElementById("cart-modal");
-  const overlay = document.getElementById("cart-overlay");
-
-  if (!modal || !overlay) return;
-
-  modal.classList.toggle("show");
-  overlay.classList.toggle("show");
-}
-
-/*************************
- * Send WhatsApp
- *************************/
-function sendWhatsApp() {
+whatsappBtn.onclick = () => {
   if (cart.length === 0) {
     alert("السلة فارغة");
     return;
@@ -83,24 +71,15 @@ function sendWhatsApp() {
   let msg = "🛒 طلب جديد:\n\n";
   let total = 0;
 
-  cart.forEach(item => {
-    msg += `${item.name} × ${item.qty} = ${item.price * item.qty} ${item.currency}\n`;
-    total += item.price * item.qty;
+  cart.forEach(i => {
+    msg += `${i.name} × ${i.qty} = ${i.price * i.qty} ${i.currency}\n`;
+    total += i.price * i.qty;
   });
 
-  msg += `\nالمجموع: ${total} USD`;
+  msg += `\nالمجموع: $${total}`;
 
-  const phone = "96178727986";
   window.open(
-    `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,
+    `https://wa.me/96178727986?text=${encodeURIComponent(msg)}`,
     "_blank"
   );
-}
-
-/*************************
- * Make functions global
- * (مهم جدًا)
- *************************/
-window.addToCart = addToCart;
-window.toggleCart = toggleCart;
-window.sendWhatsApp = sendWhatsApp;
+};

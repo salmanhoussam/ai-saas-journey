@@ -1,234 +1,40 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<title>Menu</title>
-
-<style>
-body {
-  margin: 0;
-  background: #000;
-  color: #fff;
-  font-family: Arial;
-}
-
-/* زر السلة */
-.cart-btn {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-  background: #1db954;
-  border: none;
-  cursor: pointer;
-  font-size: 22px;
-  z-index: 1001;
-}
-
-#cart-count {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  background: red;
-  color: #fff;
-  border-radius: 50%;
-  padding: 2px 6px;
-  font-size: 12px;
-}
-
-/* overlay */
-#overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  display: none;
-  z-index: 1000;
-}
-
-/* السلة */
-#cart {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 320px;
-  background: #111;
-  border-radius: 15px;
-  padding: 15px;
-  transform: translate(-50%, -50%);
-  display: none;
-  z-index: 1001;
-}
-
-#cart h3 {
-  margin-top: 0;
-  text-align: center;
-}
-
-.cart-item {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  font-size: 14px;
-}
-
-.cart-footer button {
-  width: 100%;
-  padding: 8px;
-  margin-top: 6px;
-  cursor: pointer;
-  border: none;
-}
-
-/* المنيو */
-#menu {
-  display: flex;
-  gap: 15px;
-  padding: 90px 20px;
-}
-
-.item {
-  background: #111;
-  padding: 10px;
-  border-radius: 10px;
-  width: 150px;
-  text-align: center;
-}
-
-.item button {
-  background: #1db954;
-  border: none;
-  padding: 6px 10px;
-  cursor: pointer;
-}
-</style>
+  <meta charset="UTF-8">
+  <title>Menu</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <!-- زر السلة -->
-<button class="cart-btn" onclick="toggleCart()">
+<button class="cart-btn" id="cartBtn">
   🛒
   <span id="cart-count">0</span>
 </button>
 
-<div id="overlay" onclick="toggleCart()"></div>
+<div id="overlay"></div>
 
 <!-- نافذة السلة -->
 <div id="cart">
   <h3>🛒 سلتك</h3>
   <div id="cart-items"></div>
-  <p id="cart-total">المجموع: USD 0</p>
+  <p id="cart-total">المجموع: $0</p>
 
   <div class="cart-footer">
-    <button onclick="sendWhatsApp()">تأكيد الطلب</button>
-    <button onclick="toggleCart()">إغلاق</button>
+    <button id="whatsappBtn">تأكيد الطلب</button>
+    <button id="closeCart">إغلاق</button>
   </div>
 </div>
 
 <!-- المنيو -->
 <div id="menu"></div>
 
-<script>
-let cart = [];
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-/* فتح / إغلاق السلة */
-function toggleCart() {
-  const cartBox = document.getElementById("cart");
-  const overlay = document.getElementById("overlay");
-
-  const isOpen = cartBox.style.display === "block";
-
-  cartBox.style.display = isOpen ? "none" : "block";
-  overlay.style.display = isOpen ? "none" : "block";
-}
-
-/* إضافة للسلة */
-function addToCart(item) {
-  const found = cart.find(i => i.id === item.id);
-
-  if (found) {
-    found.qty++;
-  } else {
-    cart.push({ ...item, qty: 1 });
-  }
-
-  updateCart();
-}
-
-/* تحديث السلة */
-function updateCart() {
-  const itemsDiv = document.getElementById("cart-items");
-  const count = document.getElementById("cart-count");
-  const totalDiv = document.getElementById("cart-total");
-
-  itemsDiv.innerHTML = "";
-
-  let total = 0;
-  let qty = 0;
-
-  cart.forEach(item => {
-    total += item.price * item.qty;
-    qty += item.qty;
-
-    itemsDiv.innerHTML += `
-      <div class="cart-item">
-        <span>${item.name} × ${item.qty}</span>
-        <span>USD ${item.price * item.qty}</span>
-      </div>
-    `;
-  });
-
-  count.textContent = qty;
-  totalDiv.textContent = `المجموع: USD ${total}`;
-}
-
-/* واتساب */
-function sendWhatsApp() {
-  if (cart.length === 0) {
-    alert("السلة فارغة");
-    return;
-  }
-
-  let msg = "🛒 طلب جديد:\n\n";
-  let total = 0;
-
-  cart.forEach(i => {
-    msg += `${i.name} × ${i.qty} = USD ${i.price * i.qty}\n`;
-    total += i.price * i.qty;
-  });
-
-  msg += `\nالمجموع: USD ${total}`;
-
-  const phone = "96178727986";
-  window.open(
-    `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,
-    "_blank"
-  );
-}
-
-/* بيانات تجريبية */
-const menu = [
-  { id: 1, name: "تويستر", price: 5 },
-  { id: 2, name: "فاهيتا", price: 6 },
-  { id: 3, name: "كريسبي", price: 4.5 }
-];
-
-const menuDiv = document.getElementById("menu");
-
-menu.forEach(item => {
-  const div = document.createElement("div");
-  div.className = "item";
-  div.innerHTML = `
-    <h4>${item.name}</h4>
-    <p>USD ${item.price}</p>
-    <button>أضف إلى السلة</button>
-  `;
-  div.querySelector("button").onclick = () => addToCart(item);
-  menuDiv.appendChild(div);
-});
-</script>
-
+<script src="app.js"></script>
+<script src="cart.js"></script>
 </body>
 </html>
