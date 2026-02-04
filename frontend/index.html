@@ -23,13 +23,14 @@ body {
   background: #1db954;
   border: none;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 22px;
+  z-index: 1001;
 }
 
 #cart-count {
   position: absolute;
-  top: -5px;
-  right: -5px;
+  top: -6px;
+  right: -6px;
   background: red;
   color: #fff;
   border-radius: 50%;
@@ -37,14 +38,13 @@ body {
   font-size: 12px;
 }
 
-/* خلفية */
+/* overlay */
 #overlay {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.6);
-  opacity: 0;
-  pointer-events: none;
-  transition: 0.3s;
+  display: none;
+  z-index: 1000;
 }
 
 /* السلة */
@@ -56,19 +56,14 @@ body {
   background: #111;
   border-radius: 15px;
   padding: 15px;
-  transform: translate(-50%, -60%);
-  opacity: 0;
-  transition: 0.3s;
-}
-
-#cart.show {
-  opacity: 1;
   transform: translate(-50%, -50%);
+  display: none;
+  z-index: 1001;
 }
 
-#overlay.show {
-  opacity: 1;
-  pointer-events: all;
+#cart h3 {
+  margin-top: 0;
+  text-align: center;
 }
 
 .cart-item {
@@ -83,13 +78,14 @@ body {
   padding: 8px;
   margin-top: 6px;
   cursor: pointer;
+  border: none;
 }
 
 /* المنيو */
 #menu {
   display: flex;
   gap: 15px;
-  padding: 80px 20px;
+  padding: 90px 20px;
 }
 
 .item {
@@ -139,8 +135,13 @@ let cart = [];
 
 /* فتح / إغلاق السلة */
 function toggleCart() {
-  document.getElementById("cart").classList.toggle("show");
-  document.getElementById("overlay").classList.toggle("show");
+  const cartBox = document.getElementById("cart");
+  const overlay = document.getElementById("overlay");
+
+  const isOpen = cartBox.style.display === "block";
+
+  cartBox.style.display = isOpen ? "none" : "block";
+  overlay.style.display = isOpen ? "none" : "block";
 }
 
 /* إضافة للسلة */
