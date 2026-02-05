@@ -4,7 +4,7 @@
 const SUPABASE_URL = "https://znloborouipckokqpidu.supabase.co";
 const SUPABASE_KEY = "sb_publishable_1sLCk0nZR20iQCyvRqfoxg_uI6Mun2c";
 
-const supabase = window.supabase.createClient(
+const db = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
@@ -21,24 +21,22 @@ async function loadMenu() {
   const menuDiv = document.getElementById("menu");
   menuDiv.innerHTML = "⏳ جاري تحميل المنيو...";
 
-  /* 1️⃣ جلب الكاتيجوري */
-  const { data: categories, error: catError } = await supabase
+  const { data: categories, error: catError } = await db
     .from("categories")
     .select("*")
     .eq("active", true)
     .order("order");
 
   if (catError) {
-    menuDiv.innerHTML = "❌ خطأ بتحميل الكاتيجوري";
     console.error(catError);
+    menuDiv.innerHTML = "❌ خطأ بتحميل الكاتيجوري";
     return;
   }
 
   menuDiv.innerHTML = "";
 
-  /* 2️⃣ لكل كاتيجوري نجيب العناصر */
   for (const category of categories) {
-    const { data: items, error: itemError } = await supabase
+    const { data: items, error: itemError } = await db
       .from("menu_items")
       .select("*")
       .eq("category_id", category.id)
@@ -51,7 +49,6 @@ async function loadMenu() {
 
     const catDiv = document.createElement("div");
     catDiv.className = "category";
-
     catDiv.innerHTML = `<h2>${category.name}</h2>`;
 
     items.forEach(item => {
@@ -59,10 +56,11 @@ async function loadMenu() {
       itemDiv.className = "item";
 
       itemDiv.innerHTML = `
-        <span>
-          ${item.name_ar}
-          - ${item.price} ${item.currency}
-        </span>
+        <img src="${item.image_url}" alt="${item.name_ar}" />
+        <div class="item-info">
+          <strong>${item.name_ar}</strong>
+          <span>${item.price} ${item.currency}</span>
+        </div>
         <button onclick="addToCart(
           ${item.id},
           '${item.name_ar}',
