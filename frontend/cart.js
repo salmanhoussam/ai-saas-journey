@@ -9,7 +9,8 @@ function renderCart() {
   let total = 0;
 
   cart.forEach((item, index) => {
-    total += item.price * item.qty;
+    const itemTotal = item.price * item.qty;
+    total += itemTotal;
 
     const div = document.createElement("div");
     div.className = "cart-item";
@@ -17,7 +18,7 @@ function renderCart() {
     div.innerHTML = `
       <div class="cart-row">
         <strong>${item.name}</strong>
-        <span>$${item.price * item.qty}</span>
+        <span>$${itemTotal}</span>
       </div>
 
       <div class="cart-row qty">
@@ -28,7 +29,7 @@ function renderCart() {
 
       <div class="note">
         <textarea
-          placeholder="Add note (no onion, extra sauce...)"
+          placeholder="ملاحظات الطلب (بدون بصل، صوص زيادة...)"
           oninput="saveNote(${index}, this.value)"
         >${item.note || ""}</textarea>
       </div>
@@ -37,7 +38,7 @@ function renderCart() {
     list.appendChild(div);
   });
 
-  totalDiv.textContent = `Total: $${total}`;
+  totalDiv.textContent = `الإجمالي: $${total}`;
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 
@@ -58,38 +59,38 @@ function saveNote(index, text) {
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 
-/* Checkout (لاحقاً واتساب أو API) */
+/* إرسال الطلب عبر واتساب */
 function checkout() {
   if (cart.length === 0) {
-    alert("Cart is empty");
+    alert("السلة فارغة 🛒");
     return;
   }
 
-  let message = "🛒 *New Order*\n\n";
+  let message = "🛒 *طلب جديد*\n\n";
   let total = 0;
 
-  cart.forEach(item => {
+  cart.forEach((item) => {
     const itemTotal = item.price * item.qty;
     total += itemTotal;
 
-    message += `• ${item.name}\n`;
-    message += `  Qty: ${item.qty}\n`;
-    message += `  Price: $${itemTotal}\n`;
+    message += `🍽️ ${item.name}\n`;
+    message += `الكمية: ${item.qty}\n`;
+    message += `السعر: $${itemTotal}\n`;
 
     if (item.note && item.note.trim() !== "") {
-      message += `  📝 Note: ${item.note}\n`;
+      message += `📝 ملاحظة: ${item.note}\n`;
     }
 
     message += "\n";
   });
 
-  message += `💰 *Total: $${total}*`;
+  message += `💰 *الإجمالي: $${total}*`;
 
-  const phone = "96178727986"; // ← حط رقمك مع كود الدولة
+  const phone = "96178727986"; // ضع رقم المطعم
   const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 
   window.open(url, "_blank");
 }
 
-
+/* تشغيل أولي */
 renderCart();
