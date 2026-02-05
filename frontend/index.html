@@ -2,23 +2,46 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <title>المنيو</title>
+  <title>Menu</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <header class="top-bar">
-    <h1>📋 المنيو</h1>
+<!-- =====================
+     HERO
+====================== -->
+<header id="hero" class="hero">
+  <div class="hero-overlay">
+    <div class="hero-content">
+      <h1 class="hero-title">Menu</h1>
+      <p class="restaurant-name" data-i18n="restaurant">
+        Salman Restaurant
+      </p>
+    </div>
 
-    <button class="cart-btn" onclick="goToCart()">
-      🛒 <span id="cart-count">0</span>
-    </button>
-  </header>
+    <!-- language -->
+    <button class="lang-btn" id="langToggle">EN</button>
 
-  <section id="menu"></section>
+    <!-- cart -->
+    <button class="cart-btn">🛒</button>
+  </div>
+</header>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js"></script>
+<!-- =====================
+     CATEGORIES
+====================== -->
+<section class="categories">
+  <div id="categoriesGrid" class="categories-grid">
+    <!-- JS will fill this -->
+  </div>
+</section>
+
+<!-- =====================
+     SCRIPTS
+====================== -->
+<script type="module" src="app.js"></script>
+
 </body>
 </html>
