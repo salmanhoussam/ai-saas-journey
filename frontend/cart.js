@@ -2,8 +2,10 @@ import {
   getCurrentLang,
   applyLanguage,
   getCart,
-  updateQty
+  updateQty,
+  clearCart   // ⬅️ أضفها
 } from "./utils.js";
+
 
 /* =====================
    TRANSLATIONS
@@ -57,24 +59,27 @@ function checkout() {
 
   message += `💰 ${t[lang].total}: $${total}`;
 
-  // فتح واتساب
+  // افتح واتساب
   window.open(
     `https://wa.me/96178727986?text=${encodeURIComponent(message)}`,
     "_blank"
   );
 
-  // 🔥 تصفير السلة بالكامل
-  localStorage.removeItem("cart");
+  // 🔥 امسح السلة بالطريقة الصح
+  clearCart();
+
+  // 🔄 صفّر الحالة
   cart = [];
 
-  // تحديث الواجهة
+  // 🔄 حدّث الواجهة فورًا
   renderCart();
 
-  // (اختياري) الرجوع للرئيسية بعد الطلب
+  // 🔄 إجبار إعادة تحميل (مهم للموبايل)
   setTimeout(() => {
-    window.location.href = "index.html";
-    }, 500);
+    location.reload();
+  }, 300);
 }
+
 
 /* =====================
    RENDER
