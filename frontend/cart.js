@@ -71,9 +71,9 @@ function checkout() {
   renderCart();
 
   // (اختياري) الرجوع للرئيسية بعد الطلب
-  // setTimeout(() => {
-  //   window.location.href = "index.html";
-  // }, 500);
+  setTimeout(() => {
+    window.location.href = "index.html";
+    }, 500);
 }
 
 /* =====================
