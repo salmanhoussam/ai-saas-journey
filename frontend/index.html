@@ -4,34 +4,38 @@
   <meta charset="UTF-8" />
   <title>Menu</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
+
+<body class="page-index">
+
+
 <body>
 
-<!-- =====================
-     HERO
-====================== -->
-<header id="hero" class="hero">
-  <div class="hero-overlay">
-    <div class="hero-content">
-      <h1 class="hero-title">Menu</h1>
-      <p class="restaurant-name" data-i18n="restaurant">
-        Salman Restaurant
-      </p>
+  <!-- TOP ACTIONS -->
+<div class="top-actions">
+  <button class="lang-btn" id="langToggle">EN</button>
+
+ <button class="cart-top-left">
+  🛒
+ <span id="cartCount">0</span>
+
+</button>
+</div>
+
+  <!-- HERO -->
+  <header id="hero" class="hero">
+    <div class="hero-overlay">
+      <div class="hero-content">
+        <h1 class="hero-title" id="menuTitle"></h1>
+        <div class="restaurant-name" id="restaurantName"></div>
+      </div>
     </div>
-
-    <!-- language -->
-    <button class="lang-btn" id="langToggle">EN</button>
-
-    <!-- cart -->
-    <button class="cart-btn">🛒</button>
-  </div>
-</header>
+  </header>
 
 <!-- =====================
      CATEGORIES
-====================== -->
+===================== -->
 <section class="categories">
   <div id="categoriesGrid" class="categories-grid">
     <!-- JS will fill this -->
@@ -40,7 +44,7 @@
 
 <!-- =====================
      SCRIPTS
-====================== -->
+===================== -->
 <script type="module" src="app.js"></script>
 
 </body>

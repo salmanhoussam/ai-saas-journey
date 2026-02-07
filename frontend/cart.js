@@ -1,6 +1,61 @@
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
+import {
+  getCurrentLang,
+  applyLanguage,
+  getCart,
+  updateQty
+} from "./utils.js";
+/* =====================
+   TRANSLATIONS
+===================== */
+const t = {
+  ar: {
+    cart: "السلة",
+    total: "الإجمالي",
+    checkout: "تأكيد الطلب",
+    empty: "السلة فارغة 🛒",
+    note: "ملاحظات الطلب"
+  },
+  en: {
+    cart: "Cart",
+    total: "Total",
+    checkout: "Confirm Order",
+    empty: "Cart is empty 🛒",
+    note: "Order notes"
+  }
+};
+/* =====================
+   STATE
+===================== */
+const lang = getCurrentLang();
+applyLanguage(lang);
 
-/* عرض السلة */
+let cart = getCart();
+function checkout() {
+  if (!cart.length) {
+    alert(t[lang].empty);
+    return;
+  }
+
+  let message = "";
+  let total = 0;
+
+  cart.forEach(item => {
+    const itemTotal = item.price * item.qty;
+    total += itemTotal;
+
+    message += `🍽️ ${item.name}\n`;
+    message += `x${item.qty} - $${itemTotal}\n`;
+    if (item.note) message += `📝 ${item.note}\n`;
+    message += "\n";
+  });
+
+  message += `💰 ${t[lang].total}: $${total}`;
+
+  window.open(
+    `https://wa.me/96178727986?text=${encodeURIComponent(message)}`,
+    "_blank"
+  );
+}
 function renderCart() {
   const list = document.getElementById("cart-list");
   const totalDiv = document.getElementById("total");
@@ -8,9 +63,8 @@ function renderCart() {
   list.innerHTML = "";
   let total = 0;
 
-  cart.forEach((item, index) => {
-    const itemTotal = item.price * item.qty;
-    total += itemTotal;
+  cart.forEach(item => {
+    total += item.price * item.qty;
 
     const div = document.createElement("div");
     div.className = "cart-item";
@@ -18,79 +72,55 @@ function renderCart() {
     div.innerHTML = `
       <div class="cart-row">
         <strong>${item.name}</strong>
-        <span>$${itemTotal}</span>
+        <span>$${item.price * item.qty}</span>
       </div>
 
       <div class="cart-row qty">
-        <button onclick="changeQty(${index}, -1)">−</button>
+        <button>-</button>
         <span>${item.qty}</span>
-        <button onclick="changeQty(${index}, 1)">+</button>
+        <button>+</button>
       </div>
 
-      <div class="note">
-        <textarea
-          placeholder="ملاحظات الطلب (بدون بصل، صوص زيادة...)"
-          oninput="saveNote(${index}, this.value)"
-        >${item.note || ""}</textarea>
-      </div>
+      <textarea placeholder="${t[lang].note}">${item.note || ""}</textarea>
     `;
+
+    const [minus, plus] = div.querySelectorAll("button");
+
+    minus.onclick = () => {
+      updateQty(item.id, item.qty - 1);
+      cart = getCart();
+      renderCart();
+    };
+
+    plus.onclick = () => {
+      updateQty(item.id, item.qty + 1);
+      cart = getCart();
+      renderCart();
+    };
+
+    div.querySelector("textarea").oninput = e => {
+      item.note = e.target.value;
+    };
 
     list.appendChild(div);
   });
 
-  totalDiv.textContent = `الإجمالي: $${total}`;
-  localStorage.setItem("cart", JSON.stringify(cart));
+  totalDiv.textContent = `${t[lang].total}: $${total}`;
 }
+/* =====================
+   EVENTS
+===================== */
+document.getElementById("backBtn")?.addEventListener("click", () => {
+  history.back();
+});
 
-/* تغيير الكمية */
-function changeQty(index, delta) {
-  cart[index].qty += delta;
+document
+  .getElementById("checkoutBtn")
+  .addEventListener("click", checkout);
+/* =====================
+   INIT
+===================== */
+document.getElementById("cartTitle").textContent = t[lang].cart;
+document.getElementById("checkoutBtn").textContent = t[lang].checkout;
 
-  if (cart[index].qty <= 0) {
-    cart.splice(index, 1);
-  }
-
-  renderCart();
-}
-
-/* حفظ الملاحظة */
-function saveNote(index, text) {
-  cart[index].note = text;
-  localStorage.setItem("cart", JSON.stringify(cart));
-}
-
-/* إرسال الطلب عبر واتساب */
-function checkout() {
-  if (cart.length === 0) {
-    alert("السلة فارغة 🛒");
-    return;
-  }
-
-  let message = "🛒 *طلب جديد*\n\n";
-  let total = 0;
-
-  cart.forEach((item) => {
-    const itemTotal = item.price * item.qty;
-    total += itemTotal;
-
-    message += `🍽️ ${item.name}\n`;
-    message += `الكمية: ${item.qty}\n`;
-    message += `السعر: $${itemTotal}\n`;
-
-    if (item.note && item.note.trim() !== "") {
-      message += `📝 ملاحظة: ${item.note}\n`;
-    }
-
-    message += "\n";
-  });
-
-  message += `💰 *الإجمالي: $${total}*`;
-
-  const phone = "96178727986"; // ضع رقم المطعم
-  const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-
-  window.open(url, "_blank");
-}
-
-/* تشغيل أولي */
 renderCart();

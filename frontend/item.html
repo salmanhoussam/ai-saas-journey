@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Items</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="page-items">
+
+  <!-- CART FAB -->
+  <div class="cart-wrapper">
+  <button id="cartBtn" class="cart-fab">
+  🛒
+  <span id="cartCount" class="badge"></span>
+</button>
+
+</div>
+
+
+  <!-- BACK BUTTON -->
+<button class="back-btn" id="backBtn" aria-label="Back">
+  <svg class="back-icon" viewBox="0 0 24 24">
+    <path d="M15 18l-6-6 6-6" />
+  </svg>
+</button>
+
+
+<div id="checkoutBar" class="checkout-bar hidden">
+  <button id="checkoutBtn" class="checkout-btn">
+    <span id="checkoutText">Checkout</span>
+    <span id="checkoutTotal" class="checkout-total">$0</span>
+  </button>
+</div>
+
+
+
+  <!-- HEADER -->
+  <header class="page-header">
+    <h1 id="categoryTitle"></h1>
+  </header>
+
+  <!-- ITEMS -->
+  <section id="itemsGrid" class="items-grid"></section>
+
+  <!-- CHECKOUT BAR -->
+  <div id="checkoutBar" class="checkout-bar hidden">
+    <div class="checkout-info">
+      <span id="checkoutCount">0</span>
+      <span id="checkoutTotal">$0</span>
+    </div>
+
+
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script type="module" src="item.js"></script>
+</body>
+</html>

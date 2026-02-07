@@ -1,33 +1,64 @@
+/* ===============================
+   RESET
+================================ */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: system-ui, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 body {
   background: #fff;
   color: #111;
+  padding-top: 56px;
+  padding-bottom: 90px;
 }
 
-/* =====================
+/* ===============================
+   TOP ACTIONS (INDEX)
+================================ */
+.top-actions {
+  position: absolute;
+  top: 16px;
+  inset-inline-start: 16px;
+  inset-inline-end: 16px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  z-index: 10;
+  pointer-events: none;
+}
+
+.top-actions button {
+  pointer-events: auto;
+}
+
+
+/* ===============================
+ 
+
+
+
+/* ===============================
    HERO
-===================== */
+================================ */
 .hero {
   height: 280px;
   background: url("https://znloborouipckokqpidu.supabase.co/storage/v1/object/public/menu-images/buger.jpg")
     center / cover no-repeat;
-  position: relative;
 }
 
 .hero-overlay {
-  background: rgba(0,0,0,0.45);
+  background: rgba(0, 0, 0, 0.45);
   height: 100%;
   padding: 16px;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
 }
 
 .hero-content {
@@ -36,7 +67,8 @@ body {
 }
 
 .hero-title {
-  font-size: 40px;
+  font-size: 38px;
+  font-weight: 800;
 }
 
 .restaurant-name {
@@ -45,71 +77,334 @@ body {
   opacity: 0.9;
 }
 
-/* buttons */
-.cart-btn,
-.lang-btn {
-  position: absolute;
-  top: 16px;
-  background: #000;
-  color: #fff;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-.cart-btn {
-  left: 16px;
-}
-
-.lang-btn {
-  right: 16px;
-}
-
-/* =====================
+/* ===============================
    CATEGORIES
-===================== */
+================================ */
 .categories {
-  padding: 24px 16px;
+  padding: 20px 16px;
 }
 
 .categories-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .category-card {
-  background: #fafafa;
-  border-radius: 14px;
-  padding: 12px;
-  text-align: center;
+  position: relative;
+  height: 180px;
+  border-radius: 18px;
+  overflow: hidden;
   cursor: pointer;
-  transition: transform 0.2s;
 }
 
-.category-card:hover {
-  transform: translateY(-4px);
-}
-
-.category-image img {
+.category-card img {
   width: 100%;
-  height: 110px;
+  height: 100%;
   object-fit: cover;
-  border-radius: 10px;
-  margin-bottom: 10px;
 }
 
-/* category without image */
-.no-image {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 150px;
+.category-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
 }
 
 .category-name {
-  font-size: 16px;
+  position: absolute;
+  inset-inline-end: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #fff;
+  font-size: 26px;
+  font-weight: 700;
+  z-index: 1;
+}
+
+/* ===============================
+   ITEMS GRID
+================================ */
+
+
+/* ===============================
+   ITEM CARD
+================================ */
+.item-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===============================
+/* ===============================
+   TOP ACTIONS (ITEM PAGE)
+================================ */
+.page-items .top-actions {
+  position: fixed;
+  top: 16px;
+  inset-inline: 16px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  z-index: 1000;
+}
+
+
+/* ===============================
+   BODY DEFAULT
+================================ */
+body {
+  background: #fff;
+  color: #111;
+  padding-bottom: 90px; /* checkout bar space */
+}
+
+/* صفحات فيها أزرار ثابتة */
+body:not(.page-index) {
+  padding-top: 56px;
+}
+
+/* صفحة index بدون فراغ */
+.page-index {
+  padding-top: 0;
+}
+.lang-btn {
+  width: 44px;
+  height: 44px;
+
+  border-radius: 50%;
+  border: none;
+
+  background: #444;
+  color: #fff;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+} /* ===============================
+   CART BUTTON (INDEX)
+================================ */
+.cart-top-left {
+  width: 64px;
+  height: 64px;
+
+  border-radius: 50%;
+  border: none;
+
+  background: #2ecc71; /* أخضر جذاب */
+  color: #fff;
+
+  font-size: 26px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cart-top-left:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.35);
+}
+
+.cart-top-left:active {
+  transform: scale(0.96);
+}
+/* Amazon-like Add to Cart button */
+.add-to-cart-btn {
+  background-color: #ffd814;
+  border: 1px solid #fcd200;
+  color: #0f1111;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.add-to-cart-btn:hover {
+  background-color: #f7ca00;
+}
+
+.add-to-cart-btn:active {
+  background-color: #f0b800;
+}
+.toast {
+  position: fixed;
+  bottom: 90px; /* فوق checkout bar */
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0f1111;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  z-index: 9999;
+  display: none;
+}
+/* =========================
+   ITEMS PAGE ONLY
+========================= */
+
+.page-items {
+  padding-bottom: 90px;
+}
+
+/* =========================
+   CART FAB (ITEMS PAGE ONLY)
+========================= */
+.page-items .cart-fab {
+  position: fixed;
+  top: 16px;
+  inset-inline-end: 16px; /* RTL / LTR */
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #ffd814;
+  border: none;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 1000;
+
+  box-shadow: 0 6px 16px rgba(0,0,0,.25);
+}
+
+.page-items .cart-fab:active {
+  transform: scale(.95);
+}
+
+/* badge */
+.page-items .cart-fab .badge {
+  position: absolute;
+  top: -6px;
+  inset-inline-end: -6px;
+
+  background: #e53935;
+  color: #fff;
+
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+
+  border-radius: 50%;
+  font-size: 12px;
   font-weight: 600;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* ===============================
+   CHECKOUT BAR – ITEMS PAGE
+================================ */
+.page-items .checkout-bar {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: calc(100% - 32px);
+  max-width: 420px;
+  height: 64px;
+
+  background: transparent;
+  box-shadow: 0 8px 24px rgba(0,0,0,.25);
+  border-radius: 16px;
+
+  z-index: 999;
+}
+
+.page-items .checkout-bar.hidden {
+  display: none;
+}
+
+/* الزر */
+.page-items .checkout-bar button {
+  all: unset;
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  padding: 0 22px;
+  cursor: pointer;
+
+  background: #2ecc71;
+  border-radius: 16px;
+}
+
+/* كلمة Checkout / إتمام الطلب (بالنص تمامًا) */
+.page-items #checkoutText {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  font-size: 26px;
+  font-weight: 900;
+  color: #111;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* السعر */
+.page-items .checkout-total {
+  font-size: 22px;
+  font-weight: 900;
+  color: #111;
+}
+
+
+/* ===============================
+   BACK BUTTON (ITEM PAGE ONLY)
+================================ */
+.page-items .back-btn {
+  position: fixed;
+  top: 16px;
+  inset-inline-start: 16px;
+
+  width: 44px;
+  height: 44px;
+
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0,0,0,.2);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.page-items .back-btn:active {
+  transform: scale(0.94);
+}
+
+/* انعكاس السهم حسب اللغة */
+.page-items html[dir="rtl"] .back-icon {
+  transform: rotate(180deg);
 }

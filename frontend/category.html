@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>Category</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+  <button id="openItemsBtn">
+    عرض الأصناف
+  </button>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const categoryId = params.get("id");
+
+    if (!categoryId) {
+      alert("Category ID غير موجود");
+    }
+
+    document
+      .getElementById("openItemsBtn")
+      .addEventListener("click", () => {
+        window.location.href = `item.html?id=${categoryId}`;
+      });
+  </script>
+
+</body>
+</html>
