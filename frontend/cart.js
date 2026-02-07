@@ -51,10 +51,17 @@ function checkout() {
 
   message += `💰 ${t[lang].total}: $${total}`;
 
+  // افتح واتساب
   window.open(
     `https://wa.me/96178727986?text=${encodeURIComponent(message)}`,
     "_blank"
   );
+
+  // 🔥 امسح السلة
+  localStorage.removeItem("cart");
+
+  // حدّث الحالة
+  cart = [];
 }
 function renderCart() {
   const list = document.getElementById("cart-list");
