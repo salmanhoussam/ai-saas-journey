@@ -4,6 +4,7 @@ import {
   getCart,
   updateQty
 } from "./utils.js";
+
 /* =====================
    TRANSLATIONS
 ===================== */
@@ -23,6 +24,7 @@ const t = {
     note: "Order notes"
   }
 };
+
 /* =====================
    STATE
 ===================== */
@@ -30,6 +32,10 @@ const lang = getCurrentLang();
 applyLanguage(lang);
 
 let cart = getCart();
+
+/* =====================
+   CHECKOUT
+===================== */
 function checkout() {
   if (!cart.length) {
     alert(t[lang].empty);
@@ -51,23 +57,39 @@ function checkout() {
 
   message += `💰 ${t[lang].total}: $${total}`;
 
-  // افتح واتساب
+  // فتح واتساب
   window.open(
     `https://wa.me/96178727986?text=${encodeURIComponent(message)}`,
     "_blank"
   );
 
-  // 🔥 امسح السلة
+  // 🔥 تصفير السلة بالكامل
   localStorage.removeItem("cart");
-
-  // حدّث الحالة
   cart = [];
+
+  // تحديث الواجهة
+  renderCart();
+
+  // (اختياري) الرجوع للرئيسية بعد الطلب
+  // setTimeout(() => {
+  //   window.location.href = "index.html";
+  // }, 500);
 }
+
+/* =====================
+   RENDER
+===================== */
 function renderCart() {
   const list = document.getElementById("cart-list");
   const totalDiv = document.getElementById("total");
 
   list.innerHTML = "";
+
+  if (!cart.length) {
+    totalDiv.textContent = t[lang].empty;
+    return;
+  }
+
   let total = 0;
 
   cart.forEach(item => {
@@ -114,6 +136,7 @@ function renderCart() {
 
   totalDiv.textContent = `${t[lang].total}: $${total}`;
 }
+
 /* =====================
    EVENTS
 ===================== */
@@ -124,6 +147,7 @@ document.getElementById("backBtn")?.addEventListener("click", () => {
 document
   .getElementById("checkoutBtn")
   .addEventListener("click", checkout);
+
 /* =====================
    INIT
 ===================== */
